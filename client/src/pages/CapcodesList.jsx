@@ -71,6 +71,11 @@ class CapcodesList extends Component {
                 emptyValue: '-'
             },
             {
+                title: 'Security Code',
+                field: 'securityCode',
+                type: 'numeric',
+            },
+            {
                 title: 'Export',
                 field: 'TTDexport',
                 type: 'boolean',

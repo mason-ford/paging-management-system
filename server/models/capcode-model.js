@@ -8,6 +8,7 @@ const Capcode = new Schema(
         type: { type: Number, required: true },
 		tone1: { type: String, required: true },
 		tone2: { type: String },
+        securityCode: { type: Number },
         TTDexport: { type: Boolean },
     }
 )

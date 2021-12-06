@@ -59,6 +59,7 @@ updateCapcode = async (req, res) => {
         capcode.type = body.type
         capcode.tone1 = body.tone1
         capcode.tone2 = body.tone2
+        capcode.securityCode = body.securityCode
         capcode
             .save()
             .then(() => {

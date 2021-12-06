@@ -57,6 +57,7 @@ class CapcodesUpdate extends Component {
             type: '',
             tone1: '',
             tone2: '',
+            securityCode: '',
         }
     }
 
@@ -89,9 +90,14 @@ class CapcodesUpdate extends Component {
         this.setState({ tone2 })
     }
 
+    handleChangeInputSecurityCode = async event => {
+        const securityCode = event.target.value
+        this.setState({ securityCode })
+    }
+
     handleUpdateCapcode = async () => {
-        const { id, name, capcode, TTDexport, type, tone1, tone2 } = this.state
-        const payload = { name, capcode, TTDexport, type, tone1, tone2 }
+        const { id, name, capcode, TTDexport, type, tone1, tone2, securityCode } = this.state
+        const payload = { name, capcode, TTDexport, type, tone1, tone2, securityCode }
 
         await api.updateCapcodeById(id, payload).then(res => {
             window.alert(`Capcode updated successfully`)
@@ -110,11 +116,12 @@ class CapcodesUpdate extends Component {
             type: capcode.data.data.type,
             tone1: capcode.data.data.tone1,
             tone2: capcode.data.data.tone2,
+            securityCode: capcode.data.data.securityCode,
         })
     }
 
     render() {
-        const { name, capcode, TTDexport, type, tone1, tone2 } = this.state
+        const { name, capcode, TTDexport, type, tone1, tone2, securityCode } = this.state
         return (
             <Wrapper>
                 <Container>
@@ -173,6 +180,18 @@ class CapcodesUpdate extends Component {
                         pattern="[0-9]+([,\.][0-9]+)?"
                         value={tone2}
                         onChange={this.handleChangeInputTone2}
+                    />
+
+                    <Label>Security Code: </Label>
+                    <InputText
+                        type="number"
+                        step="1"
+                        lang="en-US"
+                        min="1"
+                        max="1000"
+                        pattern="[0-9]+([,\.][0-9]+)?"
+                        value={securityCode}
+                        onChange={this.handleChangeInputSecurityCode}
                     />
 
                     <div>
