@@ -15,9 +15,10 @@ createCapcode = (req, res) => {
     const capcode = new Capcode(body)
 
     if (!capcode) {
-        
         return res.status(409).json({ success: false, error: err })
     }
+
+    if (capcode.type === 1) capcode.tone2 = ""
 
     capcode
         .save()
@@ -60,6 +61,9 @@ updateCapcode = async (req, res) => {
         capcode.tone1 = body.tone1
         capcode.tone2 = body.tone2
         capcode.securityCode = body.securityCode
+
+        if (capcode.type === 1) capcode.tone2 = ""
+
         capcode
             .save()
             .then(() => {
@@ -111,7 +115,7 @@ getCapcodeById = async (req, res) => {
 }
 
 getCapcodes = async (req, res) => {
-    await Capcode.find({})
+    await Capcode.find().sort( {capcode: 1 })
         .then(capcodes => {
             if (!capcodes.length) {
                 return res

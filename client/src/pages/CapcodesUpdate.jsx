@@ -58,6 +58,7 @@ class CapcodesUpdate extends Component {
             tone1: '',
             tone2: '',
             securityCode: '',
+            tone2Disabled: false,
         }
     }
 
@@ -77,7 +78,14 @@ class CapcodesUpdate extends Component {
 
     handleChangeInputType = async event => {
         const type = event.target.value
-        this.setState({ type })
+        var tone2Disabled = false
+        if(type === "1") {
+            tone2Disabled = true
+        }
+        this.setState({ 
+            type: type,
+            tone2Disabled: tone2Disabled,
+        })
     }
 
     handleChangeInputTone1 = async event => {
@@ -108,6 +116,8 @@ class CapcodesUpdate extends Component {
     componentDidMount = async () => {
         const { id } = this.state
         const capcode = await api.getCapcodeById(id)
+        var tone2Disabled = false
+        if(capcode.data.data.type === 1) tone2Disabled = true
 
         this.setState({
             name: capcode.data.data.name,
@@ -117,11 +127,12 @@ class CapcodesUpdate extends Component {
             tone1: capcode.data.data.tone1,
             tone2: capcode.data.data.tone2,
             securityCode: capcode.data.data.securityCode,
+            tone2Disabled: tone2Disabled,
         })
     }
 
     render() {
-        const { name, capcode, TTDexport, type, tone1, tone2, securityCode } = this.state
+        const { name, capcode, TTDexport, type, tone1, tone2, securityCode, tone2Disabled } = this.state
         return (
             <Wrapper>
                 <Container>
@@ -146,17 +157,17 @@ class CapcodesUpdate extends Component {
                         onChange={this.handleChangeInputCapcode}
                     />
 
-                    <Label>Type: </Label>
-                    <InputText
-                        type="number"
-                        step="1"
-                        lang="en-US"
-                        min="1"
-                        max="2"
-                        pattern="[0-9]+([,\.][0-9]+)?"
-                        value={type}
-                        onChange={this.handleChangeInputType}
-                    />
+                    <Label>Tone Type: </Label>
+                    <div>
+                        <Label>
+                            <input type="radio" value="1" name="type" checked={this.state.type === "1" || type === 1} onChange={this.handleChangeInputType} /> L-Tone
+                        </Label>
+                    </div>
+                    <div>
+                        <Label>
+                            <input type="radio" value="2" name="type" checked={this.state.type === "2" || type === 2} onChange={this.handleChangeInputType} /> 2-Tone
+                        </Label>
+                    </div>
 
                     <Label>Tone 1: </Label>
                     <InputText
@@ -180,6 +191,7 @@ class CapcodesUpdate extends Component {
                         pattern="[0-9]+([,\.][0-9]+)?"
                         value={tone2}
                         onChange={this.handleChangeInputTone2}
+                        disabled={tone2Disabled}
                     />
 
                     <Label>Security Code: </Label>
