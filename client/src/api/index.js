@@ -6,11 +6,12 @@ const api = axios.create({
 
 export const insertCapcode = payload => api.post(`/capcode`, payload)
 export const getAllCapcodes = () => api.get(`/capcodes`)
-export const updateCapcodeById = (id, payload) => api.put(`/Capcode/${id}`, payload)
-export const deleteCapcodeById = id => api.delete(`/Capcode/${id}`)
-export const getCapcodeById = id => api.get(`/Capcode/${id}`)
+export const updateCapcodeById = (id, payload) => api.put(`/capcode/${id}`, payload)
+export const deleteCapcodeById = id => api.delete(`/capcode/${id}`)
+export const getCapcodeById = id => api.get(`/capcode/${id}`)
 
-export const getAllPages = () => api.get(`/pages`)
+export const getAllPages = () => api.get('/pages')
+export const getPagesCount = () => api.get('/pages/count')
 
 export const exportTTDtones = () => api.get('/capcodes/export')
 
@@ -21,6 +22,7 @@ const apis = {
     deleteCapcodeById,
     getCapcodeById,
     getAllPages,
+    getPagesCount,
     exportTTDtones
 }
 
