@@ -138,7 +138,7 @@ class CapcodesList extends Component {
                                     onClick: (event) => {
                                         api.exportTTDtones().then(res => {
                                             if(res.data.success) {
-                                                window.alert('Tones exported successfully. Please restart TwoToneDetect program.')
+                                                window.alert('Tones exported successfully. Please restart TwoToneDetect service on PMS server.')
                                             } else {
                                                 window.alert(`Error exporting tones to TwoToneDetect. ${res.data.error}`)
                                             }

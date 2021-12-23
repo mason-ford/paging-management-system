@@ -108,8 +108,7 @@ class CapcodesUpdate extends Component {
         const payload = { name, capcode, TTDexport, type, tone1, tone2, securityCode }
 
         await api.updateCapcodeById(id, payload).then(res => {
-            window.alert(`Capcode updated successfully`)
-
+            window.alert(`Capcode updated successfully. If tones were changed, please "Export for TwoToneDetect" to start detecting the new tones.`)
         })
     }
 

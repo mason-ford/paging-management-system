@@ -47,7 +47,7 @@ class Homepage extends Component {
         return (
             <Wrapper>
                 <Container>
-                    <Typography variant="h4">Page Count</Typography>
+                    <Typography variant="h5">Page Count</Typography>
                     <Grid container spacing={2}>
                         <Grid item>
                             <Card>
@@ -101,7 +101,7 @@ class Homepage extends Component {
                             <Card>
                                 <CardContent>
                                     <Typography variant="h2">{ ( this.state.pagesCount.total ? this.state.pagesCount.total : 0) }</Typography>
-                                    <Typography>Total</Typography>
+                                    <Typography>All Time</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>

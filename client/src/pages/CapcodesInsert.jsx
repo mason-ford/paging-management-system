@@ -107,7 +107,7 @@ class CapcodesInsert extends Component {
         const payload = { name, capcode, TTDexport, type, tone1, tone2, securityCode }
 
         await api.insertCapcode(payload).then(res => {
-            window.alert(`Capcode inserted successfully`)
+            window.alert(`Capcode inserted successfully. Please "Export for TwoToneDetect" to start detecting the new capcode.`)
             this.setState({
                 name: '',
                 capcode: '',
