@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import tableIcons from '../style/MaterialTableIcons';
+import tableIcons from '../style/MaterialTableIcons'
 import MaterialTable from 'material-table'
 import api from '../api'
+import moment from 'moment'
 
 import styled from 'styled-components'
 
@@ -51,7 +52,8 @@ class PagesList extends Component {
             {
                 title: 'Time',
                 field: 'time',
-                type: 'datetime',
+                render: rowData => <div>{moment(rowData.time).format('YYYY-MM-DD HH:mm:ss')}</div>,
+                //type: 'datetime',
                 filtering: false
             },
             {

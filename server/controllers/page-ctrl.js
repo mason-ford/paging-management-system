@@ -61,15 +61,17 @@ getPageById = async (req, res) => {
 getPages = async (req, res) => {
     await Page.aggregate([
             {
+                '$limit': 10000
+            }, {
                 '$sort': {
-                'time': -1
+                    'time': -1
                 }
             }, {
                 '$lookup': {
-                'from': 'capcodes', 
-                'localField': 'capcodeId', 
-                'foreignField': '_id', 
-                'as': 'capcodeData'
+                    'from': 'capcodes', 
+                    'localField': 'capcodeId', 
+                    'foreignField': '_id', 
+                    'as': 'capcodeData'
                 }
             }
         ])
