@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
-import tableIcons from '../style/MaterialTableIcons'
-import MaterialTable from 'material-table'
-import api from '../api'
+import React, { Component } from 'react';
+import MUIDataTable from 'mui-datatables';
+import api from '../api';
+import Typography from '@mui/material/Typography';
+import styled from 'styled-components';
 
-import styled from 'styled-components'
+import tableIcons from '../style/MaterialTableIcons';
 
 const Wrapper = styled.div`
     padding: 0 40px 40px 40px;
@@ -20,146 +21,140 @@ class CapcodesList extends Component {
             capcodes: [],
             columns: [],
             isLoading: false,
+            error: null
         }
     }
 
     componentDidMount = async () => {
         this.setState({ isLoading: true })
 
-        await api.getAllCapcodes().then(capcodes => {
+        try {
+            const capcodes = await api.getAllCapcodes()
             this.setState({
                 capcodes: capcodes.data.data,
                 isLoading: false,
             })
-        })
+        } catch (error) {
+            console.log("Error fetching capcodes:", error);
+            this.setState({
+                isLoading: false,
+                error: error.message,
+            });
+        }
     }
-
+    
     render() {
-        const { capcodes, isLoading } = this.state
+        const { capcodes, isLoading, error } = this.state;
 
         const columns = [
             {
-                title: 'Capcode',
-                field: 'capcode',
-                type: 'numeric',
-                cellStyle: {
-                    width: '15%'
-                }
+                name: 'capcode',
+                label: 'Capcode',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
             },
             {
-                title: 'Name',
-                field: 'name',
-                type: 'string',
-                cellStyle: {
-                    width: '30%'
-                }
+                name: 'name',
+                label: 'Name',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
             },
             {
-                title: 'Type',
-                field: 'type',
-                lookup: { 1: 'L-Tone', 2: '2-Tone' },
+                name: 'type',
+                label: 'Type',
+                options: {
+                    filter: true,
+                    sort: true,
+                    customBodyRender: (value) => (value === 1 ? 'L-Tone' : '2-Tone'),
+                },
             },
             {
-                title: 'Tone 1 (Hz)',
-                field: 'tone1',
-                type: 'numeric',
+                name: 'tone1',
+                label: 'Tone 1 (Hz)',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
             },
             {
-                title: 'Tone 2 (Hz)',
-                field: 'tone2',
-                type: 'numeric',
-                emptyValue: '-'
+                name: 'tone2',
+                label: 'Tone 2 (Hz)',
+                options: {
+                    filter: false,
+                    sort: true,
+                    customBodyRender: (value) => (value ? value : '-'),
+                },
             },
             {
-                title: 'Security Code',
-                field: 'securityCode',
-                type: 'numeric',
+                name: 'securityCode',
+                label: 'Security Code',
+                options: {
+                    filter: true,
+                    sort: true,
+                },
             },
             {
-                title: 'Export',
-                field: 'TTDexport',
-                type: 'boolean',
-                cellStyle: {
-                    width: '10%'
-                }
+                name: 'TTDexport',
+                label: 'Export',
+                options: {
+                    filter: true,
+                    sort: true,
+                    customBodyRender: (value) => (value ? 'Yes' : 'No'),
+                },
             },
-        ]
+        ];
 
-        let showTable = true
-        if (!capcodes.length) {
-            showTable = false
-        }
+        const options = {
+            filterType: 'checkbox',
+            responsive: 'standard',
+            selectableRows: 'none',
+            customToolbar: () => (
+                <div>
+                    <tableIcons.Add
+                        onClick={() => (window.location.href = `/capcodes/create`)}
+                        style={{ cursor: 'pointer' }}
+                    />
+                    <tableIcons.SurroundSoundIcon
+                        onClick={() => {
+                            api.exportTTDtones().then((res) => {
+                                if (res.data.success) {
+                                    window.alert(
+                                        'Tones exported successfully. Please restart TwoToneDetect service on PMS server.'
+                                    );
+                                } else {
+                                    window.alert(`Error exporting tones to TwoToneDetect. ${res.data.error}`);
+                                }
+                            });
+                        }}
+                        style={{ cursor: 'pointer' }}
+                    />
+                </div>
+            ),
+        };
 
         return (
             <Wrapper>
                 <Container>
-                    {showTable && (
-                        <MaterialTable
+                    {isLoading && <Typography>Loading...</Typography>}
+                    {error && <Typography style={{ color: 'red' }}>Error: {error}</Typography>}
+                    {!isLoading && !error && !capcodes.length && (
+                        <Typography>No capcodes available.</Typography>
+                    )}
+                    {capcodes.length > 0 && (
+                        <MUIDataTable
                             title="Capcodes"
-                            icons={tableIcons}
                             data={capcodes}
                             columns={columns}
-                            options={{
-                                exportButton: true,
-                                actionsColumnIndex: -1,
-                                paging: false,
-                                padding: "dense",
-                                filtering: true,
-                            }}
-                            actions={[
-                                {
-                                    icon: tableIcons.Delete,
-                                    tooltip: "Delete Capcode",
-                                    onClick: (event, rowData) => {
-                                        event.preventDefault()
-                                
-                                        if (
-                                            window.confirm(
-                                                `Do you want to delete the capcode ${rowData.name} permanently?`,
-                                            )
-                                        ) {
-                                            api.deleteCapcodeById(rowData._id)
-                                            window.location.reload()
-                                        }
-                                    },
-                                },
-                                {
-                                    icon: tableIcons.Edit,
-                                    tooltip: "Edit Capcode",
-                                    onClick: (event, rowData) => {
-                                        event.preventDefault()
-                                        window.location.href = `/capcodes/update/${rowData._id}`
-                                    },
-                                },
-                                {
-                                    icon: tableIcons.SurroundSoundIcon,
-                                    tooltip: "Export for TwoToneDetect",
-                                    isFreeAction: true,
-                                    onClick: (event) => {
-                                        api.exportTTDtones().then(res => {
-                                            if(res.data.success) {
-                                                window.alert('Tones exported successfully. Please restart TwoToneDetect service on PMS server.')
-                                            } else {
-                                                window.alert(`Error exporting tones to TwoToneDetect. ${res.data.error}`)
-                                            }
-                                        })
-                                    },
-                                },
-                                {
-                                    icon: tableIcons.Add,
-                                    tooltip: "Add Capcode",
-                                    isFreeAction: true,
-                                    onClick: (event) => {
-                                        event.preventDefault()
-                                        window.location.href = `/capcodes/create`
-                                    },
-                                },
-                            ]}
+                            options={options}
                         />
                     )}
                 </Container>
             </Wrapper>
-        )
+        );
     }
 }
 
